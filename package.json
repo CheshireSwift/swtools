@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "parcel src/**/*.html",
+    "build": "parcel build --public-url /swtools src/index.html",
+    "start": "parcel src/index.html",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -12,7 +13,7 @@
   "dependencies": {
     "fp-ts": "^2.3.1",
     "fuse.js": "^3.4.6",
-    "io-ts": "^2.0.2",
+    "io-ts": "^2.0.3",
     "lodash": "^4.17.15",
     "parcel-bundler": "^1.12.4",
     "rc-tooltip": "^4.0.0-alpha.3",
@@ -27,6 +28,7 @@
     "@types/rc-tooltip": "^3.7.2",
     "@types/react": "^16.9.17",
     "@types/react-dom": "^16.9.4",
-    "@types/react-table": "^7.0.1"
+    "@types/react-table": "^7.0.1",
+    "prettier": "^1.19.1"
   }
 }

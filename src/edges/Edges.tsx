@@ -1,20 +1,21 @@
 import _ from 'lodash'
 import * as React from 'react'
-import { Column, useTable } from 'react-table'
+import { Column, useSortBy, useTable } from 'react-table'
 import { DataContext, Edge } from '../data'
 import TooltippedText from '../TooltippedText'
 
 const col = (name: string) => ({ Header: name, accessor: name })
+const useHardMemo = (f: () => any[]) => React.useMemo(f, [])
+
 export const Edges = () => {
   const edges = React.useContext(DataContext).Edges || {}
-  const data = React.useMemo(
-    () => _.map(edges, (e, Name) => ({ Name, ...e })),
-    [],
-  )
-  const columns: Column<Edge>[] = React.useMemo(
-    () => [col('Name'), col('Description'), col('Requirements')],
-    [],
-  )
+
+  const data = useHardMemo(() => _.map(edges, (e, Name) => ({ Name, ...e })))
+  const columns: Column<Edge>[] = useHardMemo(() => [
+    col('Name'),
+    col('Description'),
+    col('Requirements'),
+  ])
 
   const {
     getTableProps,
@@ -22,7 +23,7 @@ export const Edges = () => {
     headerGroups,
     rows,
     prepareRow,
-  } = useTable<Edge>({ columns, data })
+  } = useTable<Edge>({ columns, data }, useSortBy)
 
   return (
     <div>
@@ -31,23 +32,32 @@ export const Edges = () => {
           {headerGroups.map(headerGroup => (
             <tr {...headerGroup.getHeaderGroupProps()}>
               {headerGroup.headers.map(column => (
-                <th {...column.getHeaderProps()}>{column.render('Header')}</th>
+                <th
+                  {...column.getHeaderProps(column.getSortByToggleProps())}
+                  style={{
+                    fontStyle: column.isSorted ? 'italic' : undefined,
+                    background: column.isSorted ? '#ccddff' : undefined,
+                  }}
+                >
+                  {column.render('Header')}
+                </th>
               ))}
             </tr>
           ))}
         </thead>
         <tbody {...getTableBodyProps()}>
-          {rows.map((row, i) => {
+          {rows.map(row => {
             prepareRow(row)
             return (
               <tr {...row.getRowProps()}>
-                {row.cells.map(cell => {
-                  return (
-                    <td {...cell.getCellProps()}>
-                      <TooltippedText text={cell.value} />
-                    </td>
-                  )
-                })}
+                {row.cells.map(cell => (
+                  <td
+                    {...cell.getCellProps()}
+                    style={{ background: cell.column.isSorted ? '#ccddff44' : undefined }}
+                  >
+                    <TooltippedText text={cell.value} />
+                  </td>
+                ))}
               </tr>
             )
           })}
