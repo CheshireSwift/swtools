@@ -1,12 +1,12 @@
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
+import { Items } from './Items'
 import Title from '../Title'
-import { Edges } from './Edges'
 
 ReactDOM.render(
   <>
-    <Title>Edges</Title>
-    <Edges />
+    <Title>Items</Title>
+    <Items />
   </>,
   document.getElementById('app'),
 )

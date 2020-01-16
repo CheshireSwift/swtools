@@ -1,9 +1,8 @@
-import _ from 'lodash'
+import { css, StyleSheet } from 'aphrodite'
 import * as React from 'react'
-import { Column, useSortBy, useTable, Cell } from 'react-table'
-import { DataContext, Edge } from '../data'
+import { Cell, Column, useSortBy, useTable } from 'react-table'
+import { DataContext, Item } from '../data'
 import TooltippedText from '../TooltippedText'
-import { StyleSheet, css } from 'aphrodite'
 
 const col = (name: string) => ({ Header: name, accessor: name.toLowerCase() })
 const useHardMemo = (f: () => any[]) => React.useMemo(f, [])
@@ -38,32 +37,31 @@ const styles = StyleSheet.create({
   },
 
   // cells
-  cell: { padding: '0.25em', borderBottom: '0.5px solid lightgray' },
+  cell: { padding: '0.25em', borderBottom: '0.5px solid lightgray', whiteSpace: 'nowrap' },
 
   // other
   nameCell: {
-    whiteSpace: 'nowrap',
     fontWeight: 'bold',
+  },
+
+  wrap: {
+    whiteSpace: 'normal',
   },
 })
 
-const CellBody = ({ cell }: { cell: Cell<Edge> }) => {
+const CellBody = ({ cell }: { cell: Cell<Item> }) => {
   switch (cell.column.Header) {
-    case 'Requirements':
-      return cell.value.map((req: string) => (
-        <div key={req}>
-          <TooltippedText>{req}</TooltippedText>
-        </div>
-      ))
     case 'Name':
       return (
         <div className={css(styles.nameCell)}>
           <TooltippedText>{cell.value}</TooltippedText>
-          {cell.row.original.duplicated && (
-            <span style={{ color: 'gray' }} title={cell.row.original.source}>
-              *
-            </span>
-          )}
+        </div>
+      )
+    case 'Notes':
+    case 'Weight':
+      return (
+        <div className={css(styles.wrap)}>
+          <TooltippedText>{cell.value}</TooltippedText>
         </div>
       )
     default:
@@ -75,19 +73,20 @@ const CellBody = ({ cell }: { cell: Cell<Edge> }) => {
   }
 }
 
-export const Edges = () => {
-  const edges = React.useContext(DataContext).edges || []
+export const Items = () => {
+  const items = React.useContext(DataContext).items || []
   const [selectedRow, setSelectedRow] = React.useState<string>()
 
-  const data = useHardMemo(() => edges)
-  const columns: Column<Edge>[] = useHardMemo(() => [
+  const data = useHardMemo(() => items)
+  const columns: Column<Item>[] = useHardMemo(() => [
     col('Name'),
-    col('Description'),
-    col('Requirements'),
-    col('Source'),
+    col('Cost'),
+    col('Weight'),
+    col('Category'),
+    { Header: 'Notes', accessor: (item: Item) => item.notes || '' },
   ])
 
-  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable<Edge>(
+  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable<Item>(
     { columns, data },
     useSortBy,
   )

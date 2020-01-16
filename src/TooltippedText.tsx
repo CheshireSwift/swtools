@@ -6,16 +6,10 @@ import replaceToArray from 'string-replace-to-array'
 interface EntryDisplayProps {
   name: string
 }
-const AttributeDisplay = ({ name }: EntryDisplayProps) => (
-  <>{'Attribute: ' + name}</>
-)
-const ConditionDisplay = ({ name }: { name: string }) => (
-  <>{'Condition: ' + name}</>
-)
+const AttributeDisplay = ({ name }: EntryDisplayProps) => <>{'Attribute: ' + name}</>
+const ConditionDisplay = ({ name }: { name: string }) => <>{'Condition: ' + name}</>
 const EdgeDisplay = ({ name }: { name: string }) => <>{'Edge: ' + name}</>
-const ManeuverDisplay = ({ name }: { name: string }) => (
-  <>{'Maneuver: ' + name}</>
-)
+const ManeuverDisplay = ({ name }: { name: string }) => <>{'Maneuver: ' + name}</>
 const RankDisplay = ({ name }: { name: string }) => <>{'Rank: ' + name}</>
 const SkillDisplay = ({ name }: { name: string }) => <>{'Skill: ' + name}</>
 
@@ -64,31 +58,17 @@ const tagMatcher = new RegExp(`(${anyKnownTypeMarker}):(${markedText})`, 'g')
 
 const tooltipper = () => {
   let i = 0
-  return (
-    _match: string,
-    marker: keyof typeof typeByMarker,
-    name: string,
-  ): React.ReactElement => (
-    <Tooltip
-      key={i++}
-      overlay={typeByMarker[marker].element(name)}
-      placement="bottom"
-      trigger="hover"
-    >
-      <a
-        href={'../' + typeByMarker[marker].url + '/#' + name}
-        style={{ fontWeight: 'bold' }}
-      >
+  return (_match: string, marker: keyof typeof typeByMarker, name: string): React.ReactElement => (
+    <Tooltip key={i++} overlay={typeByMarker[marker].element(name)} placement="bottom" trigger="hover">
+      <a href={'../' + typeByMarker[marker].url + '/#' + name} style={{ fontWeight: 'bold' }}>
         {name}
       </a>
     </Tooltip>
   )
 }
 
-export const TooltippedText = ({ text }: { text: string }) => (
-  <div>
-    <>{replaceToArray(text, tagMatcher, tooltipper())}</>
-  </div>
+export const TooltippedText = ({ children }: { children: string }) => (
+  <>{replaceToArray(children, tagMatcher, tooltipper())}</>
 )
 
 export default TooltippedText
