@@ -14,7 +14,6 @@ body {
   width: 100%;
   background: red;
   padding: 0.5em 20%;
-  // position: fixed;
   box-shadow: 0 0.5em 1em -1em black;
   > h1 {
     font-weight: bolder;
@@ -22,12 +21,22 @@ body {
   }
 }
 
-table {
-  max-width: 60%;
-  margin: 1em auto;
+.table-wrapper {
+  // height: 80vh;
+  max-height: 85vh;
+  overflow-y: scroll;
+}
 
+table {
+  width: 100%;
   th {
     font-weight: bold;
     font-size: large;
   }
+}
+
+.content {
+  // width: 100%;
+  max-width: 60%;
+  margin: 1em auto;
 }

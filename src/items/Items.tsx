@@ -1,6 +1,6 @@
 import { css } from 'aphrodite'
 import * as React from 'react'
-import { Cell, Column, useSortBy, useTable } from 'react-table'
+import { Cell, Column, useSortBy, useTable, useFilters, useGlobalFilter } from 'react-table'
 import { DataContext, Item } from '../data'
 import TooltippedText from '../TooltippedText'
 import { tableStyles } from '../styles'
@@ -89,53 +89,75 @@ export const Items = () => {
     { Header: 'Notes', accessor: (item: Item) => item.notes || '' },
   ])
 
-  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable<Item>(
-    { columns, data },
-    useSortBy,
-  )
+  const {
+    getTableProps,
+    getTableBodyProps,
+    headerGroups,
+    rows,
+    prepareRow,
+    state: { globalFilter },
+    setGlobalFilter,
+  } = useTable<Item>({ columns, data, initialState: { globalFilter: '' } }, useFilters, useGlobalFilter, useSortBy)
 
   return (
-    <table {...getTableProps()} className={css(tableStyles.table)}>
-      <thead>
-        {headerGroups.map(headerGroup => (
-          <tr {...headerGroup.getHeaderGroupProps()}>
-            {headerGroup.headers.map(column => (
-              <th
-                {...column.getHeaderProps(column.getSortByToggleProps())}
-                className={css(tableStyles.cell, column.isSorted && tableStyles.headerColHighlight)}
-              >
-                {column.render('Header')}
-              </th>
+    <div className="content">
+      <div className="table-wrapper">
+        <table {...getTableProps()} className={css(tableStyles.table)}>
+          <thead>
+            {headerGroups.map(headerGroup => (
+              <tr {...headerGroup.getHeaderGroupProps()}>
+                {headerGroup.headers.map(column => (
+                  <th
+                    {...column.getHeaderProps(column.getSortByToggleProps())}
+                    className={css(tableStyles.cell, column.isSorted && tableStyles.headerColHighlight)}
+                  >
+                    {column.render('Header')}
+                  </th>
+                ))}
+              </tr>
             ))}
-          </tr>
-        ))}
-      </thead>
-      <tbody {...getTableBodyProps()}>
-        {rows.map(row => {
-          prepareRow(row)
-          const rowIsSelected =
-            selectedRow != null ? selectedRow === row.id : row.original.name.startsWith(selectedName || '')
-          return (
-            <tr
-              {...row.getRowProps()}
-              className={css(tableStyles.row, rowIsSelected && tableStyles.marked)}
-              ref={rowIsSelected ? rowRef : null}
-              onClick={() => {
-                setSelectedRow(row.id, row.original.name)
-              }}
-            >
-              {row.cells.map(cell => (
-                <td
-                  {...cell.getCellProps()}
-                  className={css(tableStyles.cell, cell.column.isSorted && tableStyles.cellColHighlight)}
+          </thead>
+          <tbody {...getTableBodyProps()}>
+            {rows.map(row => {
+              prepareRow(row)
+              const rowIsSelected =
+                selectedRow != null ? selectedRow === row.id : row.original.name.startsWith(selectedName || '')
+              return (
+                <tr
+                  {...row.getRowProps()}
+                  className={css(tableStyles.row, rowIsSelected && tableStyles.marked)}
+                  ref={rowIsSelected ? rowRef : null}
+                  onClick={() => {
+                    setSelectedRow(row.id, row.original.name)
+                  }}
                 >
-                  <CellBody cell={cell} selected={rowIsSelected} />
-                </td>
-              ))}
-            </tr>
-          )
-        })}
-      </tbody>
-    </table>
+                  {row.cells.map(cell => (
+                    <td
+                      {...cell.getCellProps()}
+                      className={css(tableStyles.cell, cell.column.isSorted && tableStyles.cellColHighlight)}
+                    >
+                      <CellBody cell={cell} selected={rowIsSelected} />
+                    </td>
+                  ))}
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
+      </div>
+      <div style={{ marginTop: '1em' }}>
+        <input
+          placeholder="Search..."
+          value={globalFilter || ''}
+          onChange={e => {
+            setGlobalFilter(e.target.value)
+          }}
+        />
+        <span style={{ marginLeft: '1em' }}>
+          {!!(globalFilter && globalFilter.length) && <>"{globalFilter}" matches </>}
+          {rows.length} rows.
+        </span>
+      </div>
+    </div>
   )
 }
