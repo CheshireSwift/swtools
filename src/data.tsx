@@ -48,45 +48,6 @@ export type AllData = {
   items: Item[]
 }
 
-// const addSource = <T extends {}>(Source: string) => (entry: T) => ({ ...entry, Source } as Sourced<T>)
-
-// const processFile = (data: FileData, source: string) =>
-//   _.mapValues<FileData, SourcedData>(data, dataField => _.mapValues(dataField, addSource(source))) as SourcedData
-
-// type SourcedData = {
-//   Edges?: Dictionary<Sourced<EdgeData>>
-//   Items?: Dictionary<Sourced<ItemData>>
-// }
-
-// function fileMerger(existingValues: Edge[], newValues: { [k: string]: Edge }): Edge[]
-// function fileMerger(existingValues: Item[], newValues: { [k: string]: Item }): Item[]
-// function fileMerger<T>(existingValues: Named<T>[], newValues: { [k: string]: T }): Named<T>[] {
-//   const swapPair = (v: T, k: string): Named<T> => ({ ...v, Name: k })
-//   const newPairs = _.map(newValues, swapPair)
-//   return [...existingValues, ...newPairs]
-// }
-
-// const processedFiles: SourcedData[] = _.map(dataFiles as { [source: string]: FileData }, processFile)
-
-// const allFileData: AllData = _.mapValues(
-//   {
-//     Edges: [] as Edge[],
-//     Items: [] as Item[],
-//   } as AllData,
-//   (_empty, key) => _.reduce(_.map(processedFiles, key), fileMerger, []) as any[],
-// )
-
-// function processData(fileData: AllData) {
-//   const lookups = {}
-//   const Edges = _.map(fileData.Edges, edge => ({
-//     ...edge,
-//     Requirements: edge.Requirements.split(', '),
-//     duplicated: _.filter(fileData.Edges, { Name: edge.Name }).length > 1,
-//   }))
-//   return { Edges, lookups }
-// }
-// export const allData = processData(allFileData)
-
 function processData(dataFiles: Dictionary<FileData>): AllData {
   const allEdges = _.compact(
     _.flatMap(dataFiles, (file, source) => {

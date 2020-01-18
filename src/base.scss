@@ -1,0 +1,33 @@
+@use 'reset';
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  margin: 0;
+  background: cornsilk;
+}
+
+.header {
+  width: 100%;
+  background: red;
+  padding: 0.5em 20%;
+  // position: fixed;
+  box-shadow: 0 0.5em 1em -1em black;
+  > h1 {
+    font-weight: bolder;
+    font-size: xx-large;
+  }
+}
+
+table {
+  max-width: 60%;
+  margin: 1em auto;
+
+  th {
+    font-weight: bold;
+    font-size: large;
+  }
+}
