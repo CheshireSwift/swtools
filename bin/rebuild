@@ -1,0 +1,5 @@
+#! sh
+set -e
+npm run clean
+npm run build
+rm -rf swtools.zip

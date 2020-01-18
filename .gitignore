@@ -138,3 +138,9 @@ tags
 
 # Easy serve build output
 swtools
+
+# Site zip
+swtools.zip
+
+# Admin scripts
+bin/deploy
